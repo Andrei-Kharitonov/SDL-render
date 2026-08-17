@@ -14,8 +14,7 @@
 #define WIDTH 320
 #define HEIGHT 200
 #define SCALE 4
-#define FPS 60
-#define DELTATIME (1.0 / FPS)
+#define FPS_CAP 60
 
 #define WHITE 0xFFFFFF00
 #define BLACK 0x00000000
@@ -90,9 +89,9 @@ void draw_circle(Circle *circle) {
   }
 }
 
-void move_obj(Point *point) {
-  point->position.x += point->velocity.x * DELTATIME;
-  point->position.y += point->velocity.y * DELTATIME;
+void move_obj(Point *point, double delta_time) {
+  point->position.x += point->velocity.x * delta_time;
+  point->position.y -= point->velocity.y * delta_time;
 }
 
 Rectangle wall_left = {
@@ -111,17 +110,17 @@ Rectangle wall_right = {
 };
 Circle ball = {
   {WIDTH/2.0, HEIGHT/2.0},
-  {20, 0},
+  {10, 2},
   WHITE,
   8,
 };
 
-void render() {
+void render(double delta_time) {
   draw_rectangle(&wall_left);
   draw_rectangle(&wall_right);
 
   draw_circle(&ball);
-  move_obj((Point *)&ball);
+  move_obj((Point *)&ball, delta_time);
 }
 // ==================
 
@@ -132,7 +131,8 @@ int main(int argc, char *argv[]) {
   SDL_Texture *texture;
   SDL_Event event;
 
-  const double target_framerate = 1.0 / (double)FPS;
+  const double target_framerate = 1.0 / (double)FPS_CAP;
+  double delta_time = 0.0;
 
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     fprintf(stderr, "SDL Init failed: %s \n", SDL_GetError());
@@ -180,9 +180,20 @@ int main(int argc, char *argv[]) {
   SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 
   uint8_t is_running = 1;
+  uint64_t last_time = SDL_GetPerformanceCounter(); 
+  uint64_t fps_time = SDL_GetPerformanceCounter();
 
   while (is_running) {
     uint64_t start = SDL_GetPerformanceCounter();
+    delta_time = (double)(start - last_time) / SDL_GetPerformanceFrequency();
+    last_time = start;
+
+    // Print fps every 1 second
+    if (start - fps_time >= SDL_GetPerformanceFrequency()) {
+      fps_time = start;
+      printf("\rFPS: %.1f", 1.0 / delta_time);
+      fflush(stdout);
+    }
 
     // Poll events
     while (SDL_PollEvent(&event)) {
@@ -192,7 +203,7 @@ int main(int argc, char *argv[]) {
     }
 
     clear_framebuf(BLACK); // background color
-    render();
+    render(delta_time);
 
     SDL_UpdateTexture(
       texture,
@@ -209,7 +220,7 @@ int main(int argc, char *argv[]) {
 
     double elapsed = (double)(end - start) / (double)SDL_GetPerformanceFrequency();
 
-    // Cap framerate to FPS
+    // Cap framerate to FPS_CAP
     if (elapsed < target_framerate) {
       SDL_Delay((target_framerate - elapsed) * 1000.0);
     }
