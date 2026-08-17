@@ -6,6 +6,7 @@
 #include <SDL3/SDL_surface.h>
 #include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -14,6 +15,7 @@
 #define HEIGHT 200
 #define SCALE 4
 #define FPS 60
+#define DELTATIME (1.0 / FPS)
 
 #define WHITE 0xFFFFFF00
 #define BLACK 0x00000000
@@ -33,11 +35,95 @@ void paint_pixel(uint32_t x, uint32_t y, uint32_t color) {
   framebuffer[WIDTH * y + x] = color;
 }
 
-
-// Your code
-void render() {
-  paint_pixel(WIDTH/2, HEIGHT/2, GREEN); 
+uint32_t get_pixel_color(uint32_t x, uint32_t y) {
+  return framebuffer[WIDTH * y + x];
 }
+
+
+// ==================
+typedef struct {
+  double x;
+  double y;
+} Vector;
+
+typedef struct {
+  Vector position;
+  Vector velocity;
+} Point;
+
+typedef struct {
+  Vector position;
+  Vector velocity;
+  uint32_t color;
+  double width;
+  double height;
+} Rectangle;
+
+typedef struct {
+  Vector position;
+  Vector velocity;
+  uint32_t color;
+  double radius;
+} Circle;
+
+void draw_rectangle(Rectangle *rectangle) {
+  for (int j = 0; j < HEIGHT; j++) {
+    for (int i = 0; i < WIDTH; i++) {
+      int w = fabs(rectangle->position.x - i) <= rectangle->width/2 || fabs(rectangle->position.x + i) <= rectangle->width/2;
+      int h = fabs(rectangle->position.y - j) <= rectangle->height/2 || fabs(rectangle->position.y + j) <= rectangle->height/2;
+      if (w & h) {
+        paint_pixel(i, j, rectangle->color);
+      }
+    }
+  }
+}
+
+void draw_circle(Circle *circle) {
+  for (int j = 0; j < HEIGHT; j++) {
+    for (int i = 0; i < WIDTH; i++) {
+      int x_sq = pow(circle->position.x - i, 2);
+      int y_sq = pow(circle->position.y - j, 2);
+      if ((x_sq + y_sq) <= pow(circle->radius, 2)) {
+        paint_pixel(i, j, circle->color);
+      }
+    }
+  }
+}
+
+void move_obj(Point *point) {
+  point->position.x += point->velocity.x * DELTATIME;
+  point->position.y += point->velocity.y * DELTATIME;
+}
+
+Rectangle wall_left = {
+  {WIDTH*0.1, HEIGHT/2.0},
+  {0, 0},
+  WHITE,
+  10,
+  HEIGHT*0.9,
+};
+Rectangle wall_right = {
+  {WIDTH*0.9, HEIGHT/2.0},
+  {0, 0},
+  WHITE,
+  10,
+  HEIGHT*0.9,
+};
+Circle ball = {
+  {WIDTH/2.0, HEIGHT/2.0},
+  {20, 0},
+  WHITE,
+  8,
+};
+
+void render() {
+  draw_rectangle(&wall_left);
+  draw_rectangle(&wall_right);
+
+  draw_circle(&ball);
+  move_obj((Point *)&ball);
+}
+// ==================
 
 
 int main(int argc, char *argv[]) {
