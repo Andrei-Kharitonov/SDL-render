@@ -56,31 +56,38 @@ void move_obj(Point *point, double delta_time) {
   point->position.y -= point->velocity.y * delta_time;
 }
 
-Rectangle wall_left = {
-  {WIDTH*0.1, HEIGHT/2.0},
-  {0, 0},
-  WHITE,
-  10,
-  HEIGHT*0.9,
-};
-Rectangle wall_right = {
-  {WIDTH*0.9, HEIGHT/2.0},
-  {0, 0},
-  WHITE,
-  10,
-  HEIGHT*0.9,
-};
+// Rectangle wall_left = {
+//   {WIDTH*0.1, HEIGHT/2.0},
+//   {0, 0},
+//   WHITE,
+//   10,
+//   HEIGHT*0.9,
+// };
+// Rectangle wall_right = {
+//   {WIDTH*0.9, HEIGHT/2.0},
+//   {0, 0},
+//   WHITE,
+//   10,
+//   HEIGHT*0.9,
+// };
 Circle ball = {
   {WIDTH/2.0, HEIGHT/2.0},
-  {10, 2},
+  {51, 37},
   WHITE,
-  8,
+  20,
 };
 
-void my_render(double delta_time) {
-  draw_rectangle(&wall_left);
-  draw_rectangle(&wall_right);
 
+void my_render(double delta_time) {
   draw_circle(&ball);
+
+  int is_top = ball.position.y - ball.radius <= 0;
+  int is_bottom = ball.position.y + ball.radius >= HEIGHT;
+  int is_left = ball.position.x - ball.radius <= 0;
+  int is_right = ball.position.x + ball.radius >= WIDTH;
+
+  if (is_top || is_bottom) ball.velocity.y = -ball.velocity.y;
+  if (is_left || is_right) ball.velocity.x = -ball.velocity.x;
+
   move_obj((Point *)&ball, delta_time);
 }
