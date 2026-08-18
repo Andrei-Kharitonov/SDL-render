@@ -69,6 +69,16 @@ void move_obj(Point *point, double delta_time) {
   point->position.y -= point->velocity.y * delta_time;
 }
 
+void window_borders_collision(Point *point, double width, double height) {
+  int is_left = point->position.x - width/2 <= 0;
+  int is_right = point->position.x + width/2 >= WIDTH;
+  int is_top = point->position.y - height/2 <= 0;
+  int is_bottom = point->position.y + height/2 >= HEIGHT;
+
+  if (is_left || is_right) point->velocity.x = -point->velocity.x;
+  if (is_top || is_bottom) point->velocity.y = -point->velocity.y;
+}
+
 Rectangle rect = {
   {20, 80},
   {35, -41},
@@ -89,21 +99,8 @@ void my_render(double delta_time) {
   draw_rectangle(&rect);
   draw_circle(&ball);
 
-  int c_is_top = ball.position.y - ball.radius <= 0;
-  int c_is_bottom = ball.position.y + ball.radius >= HEIGHT;
-  int c_is_left = ball.position.x - ball.radius <= 0;
-  int c_is_right = ball.position.x + ball.radius >= WIDTH;
-
-  int r_is_top = rect.position.y - rect.height/2 <= 0;
-  int r_is_bottom = rect.position.y + rect.height/2 >= HEIGHT;
-  int r_is_left = rect.position.x - rect.width/2 <= 0;
-  int r_is_right = rect.position.x + rect.width/2 >= WIDTH;
-
-  if (c_is_top || c_is_bottom) ball.velocity.y = -ball.velocity.y;
-  if (c_is_left || c_is_right) ball.velocity.x = -ball.velocity.x;
-
-  if (r_is_top || r_is_bottom) rect.velocity.y = -rect.velocity.y;
-  if (r_is_left || r_is_right) rect.velocity.x = -rect.velocity.x;
+  window_borders_collision((Point *)&ball, ball.radius*2, ball.radius*2);
+  window_borders_collision((Point *)&rect, rect.width, rect.height);
 
   move_obj((Point *)&ball, delta_time);
   move_obj((Point *)&rect, delta_time);
