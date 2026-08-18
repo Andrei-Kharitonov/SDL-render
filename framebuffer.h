@@ -20,6 +20,4 @@ void clear_framebuf(uint32_t color);
 
 void paint_pixel(uint32_t x, uint32_t y, uint32_t color);
 
-uint32_t get_pixel_color(uint32_t x, uint32_t y);
-
 #endif

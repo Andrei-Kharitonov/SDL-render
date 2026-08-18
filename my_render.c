@@ -2,7 +2,6 @@
 #include <math.h>
 #include <stdint.h>
 #include "framebuffer.h"
-#include "render.h"
 
 typedef struct {
   double x;
@@ -114,6 +113,15 @@ void window_borders_collision(Point *point, double width, double height) {
   if (is_top || is_bottom) point->velocity.y = -point->velocity.y;
 }
 
+// Rectangle rect = {
+//   {20, 80},
+//   {35, -41},
+//   0,
+//   WHITE,
+//   32,
+//   20
+// };
+
 Circle ball = {
   {WIDTH/2.0, HEIGHT/2.0},
   {53, 27},
@@ -122,14 +130,13 @@ Circle ball = {
   20
 };
 
-void draw(double delta_time) {
+void my_render(double delta_time) {
+  // draw_rectangle(&rect);
   draw_circle(&ball);
 
   window_borders_collision((Point *)&ball, ball.radius*2, ball.radius*2);
+  // window_borders_collision((Point *)&rect, rect.width, rect.height);
 
   move_point((Point *)&ball, delta_time);
-}
-
-int main(int argc, char *argv[]) {
-  return render(draw);
+  // move_point((Point *)&rect, delta_time);
 }
