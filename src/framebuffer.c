@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "framebuffer.h"
+#include "../include/framebuffer.h"
 
 uint32_t framebuffer[WIDTH * HEIGHT];
 

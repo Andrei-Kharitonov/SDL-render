@@ -1,8 +1,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdint.h>
-#include "framebuffer.h"
-#include "render.h"
+#include "../include/framebuffer.h"
+#include "../include/render.h"
 
 typedef struct {
   double x;
