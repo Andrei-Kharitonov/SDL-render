@@ -1,65 +1,35 @@
+#include <stdlib.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdint.h>
 #include "../include/framebuffer.h"
 #include "../include/render.h"
+#include "../include/types.h"
 
-typedef struct {
-  double x;
-  double y;
-} Vector;
-
-typedef struct {
-  Vector position;
-  Vector velocity;
-} Point;
-
-typedef struct {
-  int x;
-  int y;
-  uint32_t color;
-} Sprite_pixel;
-
-typedef struct {
-  Vector position;
-  Vector velocity;
-  Sprite_pixel (*sprite)[];
-  uint32_t color;
-  double width;
-  double height;
-} Rectangle;
-
-typedef struct {
-  Vector position;
-  Vector velocity;
-  Sprite_pixel (*sprite)[];
-  uint32_t color;
-  double radius;
-} Circle;
-
-void draw_circle_sprite(Sprite_pixel *sprite, int sprite_size, Circle *circle) {
+int draw_circle_sprite(Sprite_pixel *sprite, Circle *circle) {
   int index = 0;
-  for (int y = 0; y < circle->radius/2; y++) {
-    for (int x = 0; x < circle->radius/2; x++) {
-      double x_sq = pow(x, 2);
-      double y_sq = pow(y, 2);
-      double r_sq = pow(circle->radius, 2);
+  double r_sq = circle->radius * circle->radius;
+
+  for (int y = -circle->radius; y <= circle->radius; y++) {
+    for (int x = -circle->radius; x <= circle->radius; x++) {
       // fill
-      if (!(x_sq + y_sq + circle->radius*2 > r_sq)) {
-        sprite[index].x = x;
-        sprite[index].y = y;
+      if (!(x * x + y * y + circle->radius*2 > r_sq)) {
+        sprite[index].x = x + circle->position.x;
+        sprite[index].y = y + circle->position.y;
         sprite[index].color = circle->color;
         index++;
       }
       // edge
-      if ((x_sq + y_sq <= r_sq) && (x_sq + y_sq + circle->radius*2 > r_sq)) {
-        sprite[index].x = x;
-        sprite[index].y = y;
-        sprite[index].color = circle->color;
+      if ((x * x + y * y <= r_sq) && (x * x + y * y + circle->radius*2 > r_sq)) {
+        sprite[index].x = x + circle->position.x;
+        sprite[index].y = y + circle->position.y;
+        sprite[index].color = RED;
         index++;
       }
     }
   }
+
+  return index;
 }
 
 void draw_rectangle(Rectangle *rectangle) {
@@ -81,23 +51,23 @@ void draw_rectangle(Rectangle *rectangle) {
   }
 }
 
-void draw_circle(Circle *circle) {
-  for (int j = 0; j < HEIGHT; j++) {
-    for (int i = 0; i < WIDTH; i++) {
-      double x_sq = pow(circle->position.x - i, 2);
-      double y_sq = pow(circle->position.y - j, 2);
-      double r_sq = pow(circle->radius, 2);
-      // fill
-      if (!(x_sq + y_sq + circle->radius*2 > r_sq)) {
-        paint_pixel(i, j, circle->color);
-      }
-      // edge
-      if ((x_sq + y_sq <= r_sq) && (x_sq + y_sq + circle->radius*2 > r_sq)) {
-        paint_pixel(i, j, GREEN);
-      }
-    }
-  }
-}
+// void draw_circle(Circle *circle) {
+//   for (int j = 0; j < HEIGHT; j++) {
+//     for (int i = 0; i < WIDTH; i++) {
+//       double x_sq = pow(circle->position.x - i, 2);
+//       double y_sq = pow(circle->position.y - j, 2);
+//       double r_sq = pow(circle->radius, 2);
+//       // fill
+//       if (!(x_sq + y_sq + circle->radius*2 > r_sq)) {
+//         paint_pixel(i, j, circle->color);
+//       }
+//       // edge
+//       if ((x_sq + y_sq <= r_sq) && (x_sq + y_sq + circle->radius*2 > r_sq)) {
+//         paint_pixel(i, j, GREEN);
+//       }
+//     }
+//   }
+// }
 
 void move_point(Point *point, double delta_time) {
   point->position.x += point->velocity.x * delta_time;
@@ -119,17 +89,27 @@ Circle ball = {
   {53, 27},
   0,
   WHITE,
-  20
+  20.5
 };
 
+// Called every frame
 void draw(double delta_time) {
-  draw_circle(&ball);
+  // draw_circle(&ball);
+  render_sprites();
 
   window_borders_collision((Point *)&ball, ball.radius*2, ball.radius*2);
 
-  move_point((Point *)&ball, delta_time);
+  // move_point((Point *)&ball, delta_time);
 }
 
 int main(int argc, char *argv[]) {
-  return render(draw);
+  int ball_sprite_size = ball.radius*ball.radius * 4; // max size
+  Sprite_pixel *ball_sprite = malloc(sizeof(Sprite_pixel) * ball_sprite_size);
+  ball_sprite_size = draw_circle_sprite(ball_sprite, &ball); // actual size
+  ball_sprite = realloc(ball_sprite, sizeof(Sprite_pixel) * ball_sprite_size);
+  ball.sprite = ball_sprite;
+  add_sprite(ball_sprite, ball_sprite_size);
+
+  int exit_code = render(draw);
+  return exit_code;
 }
