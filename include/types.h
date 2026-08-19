@@ -11,18 +11,28 @@ typedef struct {
 typedef struct {
   Vector position;
   Vector velocity;
-} Point;
+} _Point;
 
 typedef struct {
-  int x;
-  int y;
+  Vector position;
   uint32_t color;
 } Sprite_pixel;
 
 typedef struct {
   Vector position;
   Vector velocity;
+
   Sprite_pixel *sprite;
+  uint32_t sprite_size;
+} _Figure;
+
+typedef struct {
+  Vector position;
+  Vector velocity;
+
+  Sprite_pixel *sprite;
+  uint32_t sprite_size;
+
   uint32_t color;
   double width;
   double height;
@@ -31,7 +41,10 @@ typedef struct {
 typedef struct {
   Vector position;
   Vector velocity;
+
   Sprite_pixel *sprite;
+  uint32_t sprite_size;
+
   uint32_t color;
   double radius;
 } Circle;

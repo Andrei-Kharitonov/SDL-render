@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stdio.h>
 #include "../include/framebuffer.h"
 #include "../include/types.h"
 
@@ -28,9 +27,11 @@ void add_sprite(Sprite_pixel sprite[], int sprite_size) {
 void render_sprites() {
   for (int i = 0; i < sprites_index; i++) {
     Sprite_pixel *sprite = sprites[i];
+    if (!sprite) continue;
+
     for (int j = 0; j < sprite_sizes[i]; j++) {
-      int x = sprite[j].x;
-      int y = sprite[j].y;
+      int x = sprite[j].position.x;
+      int y = sprite[j].position.y;
       if ((x >= 0 && x < WIDTH) && (y >= 0 && y < HEIGHT)) {
         paint_pixel(x, y, sprite[j].color);
       }
