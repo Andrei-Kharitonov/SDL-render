@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include "../include/framebuffer.h"
 
-int render(void (*draw)(double delta_time)) {
+int render(void (*callback)(double delta_time)) {
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Texture *texture;
@@ -88,7 +88,8 @@ int render(void (*draw)(double delta_time)) {
     }
 
     clear_framebuf(BLACK); // background color
-    draw(delta_time);
+    render_sprites();
+    callback(delta_time);
 
     SDL_UpdateTexture(
       texture,

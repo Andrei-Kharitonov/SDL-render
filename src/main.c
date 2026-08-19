@@ -1,12 +1,14 @@
-#include <stdlib.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "../include/framebuffer.h"
 #include "../include/render.h"
 #include "../include/types.h"
 
-int draw_circle_sprite(Sprite_pixel *sprite, Circle *circle) {
+int draw_circle_sprite(Sprite_pixel sprite[], void *circle_ptr) {
+  Circle *circle = circle_ptr;
   int index = 0;
   double r_sq = circle->radius * circle->radius;
 
@@ -30,6 +32,18 @@ int draw_circle_sprite(Sprite_pixel *sprite, Circle *circle) {
   }
 
   return index;
+}
+
+Sprite_pixel *create_sprite(int width, int height, void *figure, int (*draw_sprite)(Sprite_pixel [], void *)) {
+  int sprite_size = width * height; // max sprite size
+  Sprite_pixel *sprite = malloc(sizeof(Sprite_pixel) * sprite_size);
+
+  sprite_size = draw_sprite(sprite, figure); // actual size
+  sprite = realloc(sprite, sizeof(Sprite_pixel) * sprite_size);
+
+  add_sprite(sprite, sprite_size);
+  
+  return sprite;
 }
 
 void draw_rectangle(Rectangle *rectangle) {
@@ -93,23 +107,18 @@ Circle ball = {
 };
 
 // Called every frame
-void draw(double delta_time) {
-  // draw_circle(&ball);
-  render_sprites();
-
+void render_callback(double delta_time) {
   window_borders_collision((Point *)&ball, ball.radius*2, ball.radius*2);
-
-  // move_point((Point *)&ball, delta_time);
 }
 
 int main(int argc, char *argv[]) {
-  int ball_sprite_size = ball.radius*ball.radius * 4; // max size
-  Sprite_pixel *ball_sprite = malloc(sizeof(Sprite_pixel) * ball_sprite_size);
-  ball_sprite_size = draw_circle_sprite(ball_sprite, &ball); // actual size
-  ball_sprite = realloc(ball_sprite, sizeof(Sprite_pixel) * ball_sprite_size);
-  ball.sprite = ball_sprite;
-  add_sprite(ball_sprite, ball_sprite_size);
+  ball.sprite = create_sprite(
+    ball.radius * 2,
+    ball.radius * 2,
+    &ball,
+    draw_circle_sprite
+  );
 
-  int exit_code = render(draw);
+  int exit_code = render(render_callback);
   return exit_code;
 }

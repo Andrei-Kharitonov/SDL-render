@@ -21,7 +21,7 @@ void clear_framebuf(uint32_t color);
 
 void paint_pixel(uint32_t x, uint32_t y, uint32_t color);
 
-void add_sprite(Sprite_pixel *sprite, int sprite_size);
+void add_sprite(Sprite_pixel sprite[], int sprite_size);
 
 void render_sprites(void);
 
