@@ -1,17 +1,17 @@
+#include <string.h>
 #include <stdint.h>
-#include "../include/framebuffer.h"
 #include "../include/types.h"
+#include "../include/framebuffer.h"
 
 uint32_t framebuffer[WIDTH * HEIGHT];
 
+//TODO fix sprites array later
 Sprite_pixel *sprites[1024];
 int sprite_sizes[1024];
 int sprites_index = 0;
 
 void clear_framebuf(uint32_t color) {
-  for (int i = 0; i < WIDTH * HEIGHT; i++) {
-    framebuffer[i] = color;
-  }
+  memset(framebuffer, color, sizeof(framebuffer));
 }
 
 void paint_pixel(uint32_t x, uint32_t y, uint32_t color) {

@@ -3,6 +3,11 @@
 
 #include <stdint.h>
 
+enum shapes {
+  CIRCLE,
+  RECTANGLE
+};
+
 typedef struct {
   double x;
   double y;
@@ -24,7 +29,11 @@ typedef struct {
 
   Sprite_pixel *sprite;
   uint32_t sprite_size;
+
+  enum shapes shape;
+  uint32_t color;
 } _Figure;
+
 
 typedef struct {
   Vector position;
@@ -33,7 +42,9 @@ typedef struct {
   Sprite_pixel *sprite;
   uint32_t sprite_size;
 
+  enum shapes shape;
   uint32_t color;
+
   double width;
   double height;
 } Rectangle;
@@ -45,8 +56,19 @@ typedef struct {
   Sprite_pixel *sprite;
   uint32_t sprite_size;
 
+  enum shapes shape;
   uint32_t color;
+
   double radius;
 } Circle;
+
+
+typedef union {
+  _Point point_t;
+  _Figure figure_t;
+
+  Rectangle rectangle_t;
+  Circle circle_t;
+} Object;
 
 #endif
