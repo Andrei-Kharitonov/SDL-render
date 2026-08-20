@@ -79,7 +79,7 @@ void move_figure_sprite(Object_sprite *figure_sprite_ptr, double delta_time) {
 
   for (int i = 0; i < figure_sprite->sprite_size; i++) {
     figure_sprite->sprite_arr[i].position.x += dx;
-    figure_sprite->sprite_arr[i].position.y += dy;
+    figure_sprite->sprite_arr[i].position.y -= dy;
   }
 }
 
@@ -139,77 +139,54 @@ void window_borders_collision(Object_sprite *point_ptr, double width, double hei
   if (is_top || is_bottom) point->velocity.y = -point->velocity.y;
 }
 
-Circle_sprite ball = {
-  {WIDTH/2.0, HEIGHT/2.0},
-  {53, 27},
-  CIRCLE,
-  0,
-  0,
-  WHITE,
-  20
-};
-
-Circle_sprite ball2 = {
-  {WIDTH/4.0, HEIGHT/2.0},
-  {24, 30},
-  CIRCLE,
-  0,
-  0,
-  WHITE,
-  10
-};
-
-Circle_sprite ball_old = {
-  {40, 40},
-  {-53, -27},
-  CIRCLE,
-  0,
-  0,
-  WHITE,
-  20
-};
-
-Rectangle_sprite rect = {
-  {80, 80},
-  {0, 0},
-  RECTANGLE,
-  0,
-  0,
-  WHITE,
-  20,
-  10,
-};
-
 // Called every frame
 void render_callback(double delta_time) {
-  draw_rectangle(&rect);
+  Sprite_list_node *node = sprite_list;
 
-  draw_circle(&ball_old);
-  window_borders_collision((Object_sprite *)&ball_old, ball_old.radius*2, ball_old.radius*2);
-  move_point((Object_sprite *)&ball_old, delta_time);
+  while (node->next != NULL) {
+    double width = 0;
+    double height = 0;
 
-  window_borders_collision((Object_sprite *)&ball, ball.radius*2, ball.radius*2);
-  move_figure_sprite((Object_sprite *)&ball, delta_time);
+    switch (node->sprite->figure_sprite_t.shape) {
+      case CIRCLE:
+        width = node->sprite->circle_t.radius * 2;
+        height = node->sprite->circle_t.radius * 2;
+        break;
+      case RECTANGLE:
+        width = node->sprite->rectangle_t.width;
+        height = node->sprite->rectangle_t.height;
+        break;
+    }
 
-  move_figure_sprite((Object_sprite *)&ball2, delta_time);
-  window_borders_collision((Object_sprite *)&ball2, ball2.radius*2, ball2.radius*2);
+    window_borders_collision(node->sprite, width, height);
+    move_figure_sprite(node->sprite, delta_time);
+
+    node = node->next;
+  }
 }
 
 int main(int argc, char *argv[]) {
   init_sprite_list();
 
-  ball.sprite_arr = create_sprite(
-    ball.radius * 2,
-    ball.radius * 2,
-    (Object_sprite *)&ball,
-    draw_circle_sprite
-  );
-  ball2.sprite_arr = create_sprite(
-    ball2.radius * 2,
-    ball2.radius * 2,
-    (Object_sprite *)&ball2,
-    draw_circle_sprite
-  );
+  for (int i = 1; i < 20; i++) {
+    Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
+
+    ball->position.x = 15 * i;
+    ball->position.y = 20 + 4 * i;
+    ball->velocity.x = 50;
+    ball->velocity.y = 50;
+    ball->shape = CIRCLE;
+    ball->color = WHITE;
+    ball->radius = 6;
+
+
+    ball->sprite_arr = create_sprite(
+      ball->radius * 2,
+      ball->radius * 2,
+      (Object_sprite *)ball,
+      draw_circle_sprite
+    );
+  }
 
   int exit_code = render(render_callback);
   return exit_code;
