@@ -37,15 +37,14 @@ int draw_circle_sprite(Sprite_pixel sprite[], Object_sprite *circle_ptr) {
 Sprite_pixel *create_sprite(
   int width,
   int height,
-  uint32_t *size,
   Object_sprite *figure_sprite,
   int (*draw_sprite)(Sprite_pixel [], Object_sprite *)
 ) {
   enum shapes shape = figure_sprite->figure_sprite_t.shape;
+
   int sprite_size = width * height; // max sprite size
-  if (shape != RECTANGLE) {
-    sprite_size++;
-  }
+  if (shape != RECTANGLE) sprite_size++;
+
   Sprite_pixel *sprite = malloc(sizeof(Sprite_pixel) * sprite_size);
 
   if (!sprite) {
@@ -63,7 +62,7 @@ Sprite_pixel *create_sprite(
     return 0;
   }
 
-  *size = sprite_size;
+  figure_sprite->figure_sprite_t.sprite_size = sprite_size;
   add_sprite(sprite_list, figure_sprite);
   
   return sprite;
@@ -202,14 +201,12 @@ int main(int argc, char *argv[]) {
   ball.sprite_arr = create_sprite(
     ball.radius * 2,
     ball.radius * 2,
-    &ball.sprite_size,
     (Object_sprite *)&ball,
     draw_circle_sprite
   );
   ball2.sprite_arr = create_sprite(
     ball2.radius * 2,
     ball2.radius * 2,
-    &ball2.sprite_size,
     (Object_sprite *)&ball2,
     draw_circle_sprite
   );
