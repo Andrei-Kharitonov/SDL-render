@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/framebuffer.h"
-#include "../include/render.h"
-#include "../include/types.h"
+#include "framebuffer.h"
+#include "render.h"
+#include "types.h"
 
 int draw_circle_sprite(Sprite_pixel sprite[], Object *circle_ptr) {
   Circle *circle = &circle_ptr->circle_t;

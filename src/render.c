@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/framebuffer.h"
+#include "framebuffer.h"
 
 int render(void (*callback)(double delta_time)) {
   SDL_Window *window;

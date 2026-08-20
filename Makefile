@@ -1,5 +1,12 @@
+CFLAGS = -I./include -O3
+LIBS = `pkg-config --libs sdl3` -lm
+SDL_CFLAGS = `pkg-config --cflags sdl3`
+SRC = ./src/*.c
+OUT = main
+
 build:
-	gcc ./src/*.c `pkg-config --cflags sdl3` `pkg-config --libs sdl3` -o main -lm -O3
+	gcc $(CFLAGS) $(SDL_CFLAGS) $(LIBS) $(SRC) -o $(OUT)
 
 run:
-	./main
+	./$(OUT)
+

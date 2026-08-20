@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../include/types.h"
-#include "../include/framebuffer.h"
+#include "types.h"
+#include "framebuffer.h"
 
 uint32_t framebuffer[WIDTH * HEIGHT];
 

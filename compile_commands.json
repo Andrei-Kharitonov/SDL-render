@@ -1,0 +1,41 @@
+[
+  {
+    "file": "./src/framebuffer.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I./include",
+      "-O3",
+      "./src/framebuffer.c",
+      "-o",
+      "main"
+    ],
+    "directory": "/home/andrei/projects/simulation",
+    "output": "main"
+  },
+  {
+    "file": "./src/main.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I./include",
+      "-O3",
+      "./src/main.c",
+      "-o",
+      "main"
+    ],
+    "directory": "/home/andrei/projects/simulation",
+    "output": "main"
+  },
+  {
+    "file": "./src/render.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I./include",
+      "-O3",
+      "./src/render.c",
+      "-o",
+      "main"
+    ],
+    "directory": "/home/andrei/projects/simulation",
+    "output": "main"
+  }
+]
