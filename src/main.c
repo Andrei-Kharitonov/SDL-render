@@ -143,7 +143,7 @@ void window_borders_collision(Object_sprite *point_ptr, double width, double hei
 void render_callback(double delta_time) {
   Sprite_list_node *node = sprite_list;
 
-  while (node->next != NULL) {
+  for (int i = 0; i < 20; i++) {
     double width = 0;
     double height = 0;
 
@@ -158,8 +158,16 @@ void render_callback(double delta_time) {
         break;
     }
 
-    window_borders_collision(node->sprite, width, height);
-    move_figure_sprite(node->sprite, delta_time);
+    if (i < 10) {
+      // sprite render
+      window_borders_collision(node->sprite, width, height);
+      move_figure_sprite(node->sprite, delta_time);
+    } else {
+      // screen render
+      window_borders_collision(node->sprite, width, height);
+      draw_circle(&node->sprite->circle_t);
+      move_point(node->sprite, delta_time);
+    }
 
     node = node->next;
   }
@@ -168,17 +176,19 @@ void render_callback(double delta_time) {
 int main(int argc, char *argv[]) {
   init_sprite_list();
 
-  for (int i = 1; i < 20; i++) {
+  // sprite render
+  for (int i = 1; i < 11; i++) {
     Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
 
-    ball->position.x = 15 * i;
-    ball->position.y = 20 + 4 * i;
+    ball->position.x = 20 * i;
+    ball->position.y = 80 + 4 * i;
     ball->velocity.x = 50;
     ball->velocity.y = 50;
     ball->shape = CIRCLE;
     ball->color = WHITE;
     ball->radius = 6;
-
+    ball->sprite_arr = 0;
+    ball->sprite_size = 0;
 
     ball->sprite_arr = create_sprite(
       ball->radius * 2,
@@ -186,6 +196,23 @@ int main(int argc, char *argv[]) {
       (Object_sprite *)ball,
       draw_circle_sprite
     );
+  }
+
+  // screen render
+  for (int i = 1; i < 11; i++) {
+    Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
+
+    ball->position.x = 20 * i;
+    ball->position.y = 20 + 4 * i;
+    ball->velocity.x = 50;
+    ball->velocity.y = 50;
+    ball->shape = CIRCLE;
+    ball->color = WHITE;
+    ball->radius = 6;
+    ball->sprite_arr = 0;
+    ball->sprite_size = 0;
+
+    add_sprite(sprite_list, (Object_sprite *)ball);
   }
 
   int exit_code = render(render_callback);

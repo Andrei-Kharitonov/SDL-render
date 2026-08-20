@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "types.h"
 #include "framebuffer.h"
@@ -45,6 +46,10 @@ void render_sprites() {
 
   while (node->next != NULL) {
     _Figure_sprite figure_sprite = node->sprite->figure_sprite_t;
+
+    if (figure_sprite.sprite_arr == NULL) {
+      return;
+    }
 
     for (int j = 0; j < figure_sprite.sprite_size; j++) {
       int x = figure_sprite.sprite_arr[j].position.x;
