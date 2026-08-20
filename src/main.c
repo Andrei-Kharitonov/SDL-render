@@ -62,7 +62,7 @@ Sprite_pixel *create_sprite(
   }
 
   *size = sprite_size;
-  add_sprite(sprite, sprite_size);
+  add_sprite(sprite_list_root, sprite, sprite_size);
   
   return sprite;
 }
@@ -149,6 +149,16 @@ Circle ball = {
 };
 
 Circle ball2 = {
+  {WIDTH/4.0, HEIGHT/2.0},
+  {24, 30},
+  0,
+  0,
+  CIRCLE,
+  WHITE,
+  15
+};
+
+Circle ball_old = {
   {40, 40},
   {-53, -27},
   0,
@@ -160,21 +170,33 @@ Circle ball2 = {
 
 // Called every frame
 void render_callback(double delta_time) {
-  draw_circle(&ball2);
+  draw_circle(&ball_old);
+  window_borders_collision((Object *)&ball_old, ball_old.radius*2, ball_old.radius*2);
+  move_point((Object *)&ball_old, delta_time);
 
   window_borders_collision((Object *)&ball, ball.radius*2, ball.radius*2);
-  window_borders_collision((Object *)&ball2, ball2.radius*2, ball2.radius*2);
-
   move_figure((Object *)&ball, delta_time);
-  move_point((Object *)&ball2, delta_time);
+
+  move_figure((Object *)&ball2, delta_time);
+  window_borders_collision((Object *)&ball2, ball2.radius*2, ball2.radius*2);
 }
 
 int main(int argc, char *argv[]) {
+  // init sprite list
+  sprite_list_root = malloc(sizeof(Sprite_list_node));
+
   ball.sprite = create_sprite(
     ball.radius * 2,
     ball.radius * 2,
     &ball.sprite_size,
     (Object *)&ball,
+    draw_circle_sprite
+  );
+  ball2.sprite = create_sprite(
+    ball2.radius * 2,
+    ball2.radius * 2,
+    &ball2.sprite_size,
+    (Object *)&ball2,
     draw_circle_sprite
   );
 

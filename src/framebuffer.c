@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include "../include/types.h"
@@ -5,10 +6,7 @@
 
 uint32_t framebuffer[WIDTH * HEIGHT];
 
-//TODO fix sprites array later
-Sprite_pixel *sprites[1024];
-int sprite_sizes[1024];
-int sprites_index = 0;
+Sprite_list_node *sprite_list_root;
 
 void clear_framebuf(uint32_t color) {
   memset(framebuffer, color, sizeof(framebuffer));
@@ -18,23 +16,40 @@ void paint_pixel(uint32_t x, uint32_t y, uint32_t color) {
   framebuffer[WIDTH * y + x] = color;
 }
 
-void add_sprite(Sprite_pixel sprite[], int sprite_size) {
-  sprites[sprites_index] = sprite;
-  sprite_sizes[sprites_index] = sprite_size;
-  sprites_index++;
+Sprite_list_node *add_sprite(
+  Sprite_list_node *start_node,
+  Sprite_pixel *sprite,
+  uint32_t size
+) {
+  Sprite_list_node *node = start_node;
+
+  while (node->next != NULL) {
+    node = node->next;
+  }
+
+  node->sprite = sprite;
+  node->sprite_size = size;
+  node->next = malloc(sizeof(Sprite_list_node));
+
+  return node;
 }
 
 void render_sprites() {
-  for (int i = 0; i < sprites_index; i++) {
-    Sprite_pixel *sprite = sprites[i];
-    if (!sprite) continue;
+  Sprite_list_node *node = sprite_list_root;
 
-    for (int j = 0; j < sprite_sizes[i]; j++) {
-      int x = sprite[j].position.x;
-      int y = sprite[j].position.y;
+  if (node == NULL) {
+    return;
+  }
+
+  while (node->next != NULL) {
+    for (int j = 0; j < node->sprite_size; j++) {
+      int x = node->sprite[j].position.x;
+      int y = node->sprite[j].position.y;
       if ((x >= 0 && x < WIDTH) && (y >= 0 && y < HEIGHT)) {
-        paint_pixel(x, y, sprite[j].color);
+        paint_pixel(x, y, node->sprite[j].color);
       }
     }
+
+    node = node->next;
   }
 }
