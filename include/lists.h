@@ -1,7 +1,8 @@
-#ifndef OBJECTS_H
-#define OBJECTS_H
+#ifndef LISTS_H
+#define LISTS_H
 
-#include "types.h"
+#include "sprites.h"
+#include "hitboxes.h"
 
 typedef struct Sprite_list_node {
   Object_sprite *sprite;

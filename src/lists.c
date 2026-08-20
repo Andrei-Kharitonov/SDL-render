@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include "types.h"
+#include "basic_types.h"
 #include "framebuffer.h"
-#include "objects.h"
+#include "lists.h"
 
 Sprite_list_node *sprite_list;
 Hitbox_list_node *hitbox_list;

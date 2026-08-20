@@ -1,11 +1,37 @@
 [
   {
+    "file": "./src/draw.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I./include",
+      "-O3",
+      "./src/draw.c",
+      "-o",
+      "main"
+    ],
+    "directory": "/home/andrei/projects/simulation",
+    "output": "main"
+  },
+  {
     "file": "./src/framebuffer.c",
     "arguments": [
       "/usr/bin/gcc",
       "-I./include",
       "-O3",
       "./src/framebuffer.c",
+      "-o",
+      "main"
+    ],
+    "directory": "/home/andrei/projects/simulation",
+    "output": "main"
+  },
+  {
+    "file": "./src/lists.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I./include",
+      "-O3",
+      "./src/lists.c",
       "-o",
       "main"
     ],
@@ -26,12 +52,12 @@
     "output": "main"
   },
   {
-    "file": "./src/objects.c",
+    "file": "./src/render.c",
     "arguments": [
       "/usr/bin/gcc",
       "-I./include",
       "-O3",
-      "./src/objects.c",
+      "./src/render.c",
       "-o",
       "main"
     ],
@@ -39,12 +65,12 @@
     "output": "main"
   },
   {
-    "file": "./src/render.c",
+    "file": "./src/sprites.c",
     "arguments": [
       "/usr/bin/gcc",
       "-I./include",
       "-O3",
-      "./src/render.c",
+      "./src/sprites.c",
       "-o",
       "main"
     ],
