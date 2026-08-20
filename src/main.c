@@ -1,12 +1,14 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "framebuffer.h"
+#include "objects.h"
 #include "render.h"
 #include "types.h"
 
-int draw_circle_sprite(Sprite_pixel sprite[], Object *circle_ptr) {
-  Circle *circle = &circle_ptr->circle_t;
+int draw_circle_sprite(Sprite_pixel sprite[], Object_sprite *circle_ptr) {
+  Circle_sprite *circle = &circle_ptr->circle_t;
   int index = 0;
   double r_sq = circle->radius * circle->radius;
 
@@ -36,10 +38,10 @@ Sprite_pixel *create_sprite(
   int width,
   int height,
   uint32_t *size,
-  Object *figure,
-  int (*draw_sprite)(Sprite_pixel [], Object *)
+  Object_sprite *figure_sprite,
+  int (*draw_sprite)(Sprite_pixel [], Object_sprite *)
 ) {
-  enum shapes shape = figure->figure_t.shape;
+  enum shapes shape = figure_sprite->figure_sprite_t.shape;
   int sprite_size = width * height; // max sprite size
   if (shape != RECTANGLE) {
     sprite_size++;
@@ -51,7 +53,7 @@ Sprite_pixel *create_sprite(
     return 0;
   }
 
-  sprite_size = draw_sprite(sprite, figure); // actual size
+  sprite_size = draw_sprite(sprite, figure_sprite); // actual size
   if (shape != RECTANGLE) {
     sprite = realloc(sprite, sizeof(Sprite_pixel) * sprite_size);
   }
@@ -62,46 +64,46 @@ Sprite_pixel *create_sprite(
   }
 
   *size = sprite_size;
-  add_sprite(sprite_list_root, sprite, sprite_size);
+  add_sprite(sprite_list, figure_sprite);
   
   return sprite;
 }
 
-void move_figure(Object *figure_ptr, double delta_time) {
-  _Figure *figure = &figure_ptr->figure_t;
+void move_figure_sprite(Object_sprite *figure_sprite_ptr, double delta_time) {
+  _Figure_sprite *figure_sprite = &figure_sprite_ptr->figure_sprite_t;
 
-  double dx = figure->velocity.x * delta_time;
-  double dy = figure->velocity.y * delta_time;
+  double dx = figure_sprite->velocity.x * delta_time;
+  double dy = figure_sprite->velocity.y * delta_time;
 
-  figure->position.x += dx;
-  figure->position.y -= dy;
+  figure_sprite->position.x += dx;
+  figure_sprite->position.y -= dy;
 
-  for (int i = 0; i < figure->sprite_size; i++) {
-    figure->sprite[i].position.x += dx;
-    figure->sprite[i].position.y += dy;
+  for (int i = 0; i < figure_sprite->sprite_size; i++) {
+    figure_sprite->sprite_arr[i].position.x += dx;
+    figure_sprite->sprite_arr[i].position.y += dy;
   }
 }
 
-// void draw_rectangle(Rectangle *rectangle) {
-//   for (int j = 0; j < HEIGHT; j++) {
-//     for (int i = 0; i < WIDTH; i++) {
-//       int h = fabs(rectangle->position.x - i) <= rectangle->width/2 - 1;
-//       int v = fabs(rectangle->position.y - j) <= rectangle->height/2 - 1;
-//       int h_border = fabs(rectangle->position.x - i) <= rectangle->width/2;
-//       int v_border = fabs(rectangle->position.y - j) <= rectangle->height/2;
-//       // fill
-//       if (h && v) {
-//         paint_pixel(i, j, rectangle->color);
-//       }
-//       // edge
-//       if ((h_border && v_border) && !(h && v)) {
-//         paint_pixel(i, j, GREEN);
-//       }
-//     }
-//   }
-// }
+void draw_rectangle(Rectangle_sprite *rectangle) {
+  for (int j = 0; j < HEIGHT; j++) {
+    for (int i = 0; i < WIDTH; i++) {
+      int h = fabs(rectangle->position.x - i) <= rectangle->width/2 - 1;
+      int v = fabs(rectangle->position.y - j) <= rectangle->height/2 - 1;
+      int h_border = fabs(rectangle->position.x - i) <= rectangle->width/2;
+      int v_border = fabs(rectangle->position.y - j) <= rectangle->height/2;
+      // fill
+      if (h && v) {
+        paint_pixel(i, j, rectangle->color);
+      }
+      // edge
+      if ((h_border && v_border) && !(h && v)) {
+        paint_pixel(i, j, GREEN);
+      }
+    }
+  }
+}
 
-void draw_circle(Circle *circle) {
+void draw_circle(Circle_sprite *circle) {
   for (int j = 0; j < HEIGHT; j++) {
     for (int i = 0; i < WIDTH; i++) {
       double x_sq = (circle->position.x - i)*(circle->position.x - i);
@@ -119,14 +121,14 @@ void draw_circle(Circle *circle) {
   }
 }
 
-void move_point(Object *point_ptr, double delta_time) {
+void move_point(Object_sprite *point_ptr, double delta_time) {
   _Point *point = &point_ptr->point_t;
 
   point->position.x += point->velocity.x * delta_time;
   point->position.y -= point->velocity.y * delta_time;
 }
 
-void window_borders_collision(Object *point_ptr, double width, double height) {
+void window_borders_collision(Object_sprite *point_ptr, double width, double height) {
   _Point *point = &point_ptr->point_t;
 
   int is_left = point->position.x - width/2 <= 0;
@@ -138,65 +140,77 @@ void window_borders_collision(Object *point_ptr, double width, double height) {
   if (is_top || is_bottom) point->velocity.y = -point->velocity.y;
 }
 
-Circle ball = {
+Circle_sprite ball = {
   {WIDTH/2.0, HEIGHT/2.0},
   {53, 27},
-  0,
-  0,
   CIRCLE,
+  0,
+  0,
   WHITE,
   20
 };
 
-Circle ball2 = {
+Circle_sprite ball2 = {
   {WIDTH/4.0, HEIGHT/2.0},
   {24, 30},
-  0,
-  0,
   CIRCLE,
+  0,
+  0,
   WHITE,
-  15
+  10
 };
 
-Circle ball_old = {
+Circle_sprite ball_old = {
   {40, 40},
   {-53, -27},
-  0,
-  0,
   CIRCLE,
+  0,
+  0,
   WHITE,
   20
+};
+
+Rectangle_sprite rect = {
+  {80, 80},
+  {0, 0},
+  RECTANGLE,
+  0,
+  0,
+  WHITE,
+  20,
+  10,
 };
 
 // Called every frame
 void render_callback(double delta_time) {
+  draw_rectangle(&rect);
+
   draw_circle(&ball_old);
-  window_borders_collision((Object *)&ball_old, ball_old.radius*2, ball_old.radius*2);
-  move_point((Object *)&ball_old, delta_time);
+  window_borders_collision((Object_sprite *)&ball_old, ball_old.radius*2, ball_old.radius*2);
+  move_point((Object_sprite *)&ball_old, delta_time);
 
-  window_borders_collision((Object *)&ball, ball.radius*2, ball.radius*2);
-  move_figure((Object *)&ball, delta_time);
+  window_borders_collision((Object_sprite *)&ball, ball.radius*2, ball.radius*2);
+  move_figure_sprite((Object_sprite *)&ball, delta_time);
 
-  move_figure((Object *)&ball2, delta_time);
-  window_borders_collision((Object *)&ball2, ball2.radius*2, ball2.radius*2);
+  move_figure_sprite((Object_sprite *)&ball2, delta_time);
+  window_borders_collision((Object_sprite *)&ball2, ball2.radius*2, ball2.radius*2);
 }
 
 int main(int argc, char *argv[]) {
-  // init sprite list
-  sprite_list_root = malloc(sizeof(Sprite_list_node));
+  init_sprite_list();
 
-  ball.sprite = create_sprite(
+  ball.sprite_arr = create_sprite(
     ball.radius * 2,
     ball.radius * 2,
     &ball.sprite_size,
-    (Object *)&ball,
+    (Object_sprite *)&ball,
     draw_circle_sprite
   );
-  ball2.sprite = create_sprite(
+  ball2.sprite_arr = create_sprite(
     ball2.radius * 2,
     ball2.radius * 2,
     &ball2.sprite_size,
-    (Object *)&ball2,
+    (Object_sprite *)&ball2,
     draw_circle_sprite
   );
 

@@ -26,6 +26,19 @@
     "output": "main"
   },
   {
+    "file": "./src/objects.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I./include",
+      "-O3",
+      "./src/objects.c",
+      "-o",
+      "main"
+    ],
+    "directory": "/home/andrei/projects/simulation",
+    "output": "main"
+  },
+  {
     "file": "./src/render.c",
     "arguments": [
       "/usr/bin/gcc",

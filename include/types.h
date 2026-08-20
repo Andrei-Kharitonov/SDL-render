@@ -20,6 +20,13 @@ typedef struct {
 
 typedef struct {
   Vector position;
+  Vector velocity;
+
+  enum shapes shape;
+} _Figure;
+
+typedef struct {
+  Vector position;
   uint32_t color;
 } Sprite_pixel;
 
@@ -27,48 +34,76 @@ typedef struct {
   Vector position;
   Vector velocity;
 
-  Sprite_pixel *sprite;
-  uint32_t sprite_size;
-
   enum shapes shape;
+
+  Sprite_pixel *sprite_arr;
+  uint32_t sprite_size;
   uint32_t color;
-} _Figure;
+} _Figure_sprite;
 
 
 typedef struct {
   Vector position;
   Vector velocity;
 
-  Sprite_pixel *sprite;
-  uint32_t sprite_size;
-
   enum shapes shape;
+
+  Sprite_pixel *sprite_arr;
+  uint32_t sprite_size;
   uint32_t color;
 
   double width;
   double height;
-} Rectangle;
+} Rectangle_sprite;
 
 typedef struct {
   Vector position;
   Vector velocity;
 
-  Sprite_pixel *sprite;
-  uint32_t sprite_size;
-
   enum shapes shape;
+
+  Sprite_pixel *sprite_arr;
+  uint32_t sprite_size;
   uint32_t color;
 
   double radius;
-} Circle;
+} Circle_sprite;
 
+typedef union {
+  _Point point_t;
+  _Figure figgure_t;
+  _Figure_sprite figure_sprite_t;
+
+  Rectangle_sprite rectangle_t;
+  Circle_sprite circle_t;
+} Object_sprite;
+
+
+typedef struct {
+  Vector position;
+  Vector velocity;
+
+  enum shapes shape;
+
+  double width;
+  double height;
+} Rectangle_hitbox;
+
+typedef struct {
+  Vector position;
+  Vector velocity;
+
+  enum shapes shape;
+
+  double radius;
+} Circle_hitbox;
 
 typedef union {
   _Point point_t;
   _Figure figure_t;
 
-  Rectangle rectangle_t;
-  Circle circle_t;
-} Object;
+  Rectangle_hitbox rectangle_t;
+  Circle_hitbox circle_t;
+} Object_hitbox;
 
 #endif
