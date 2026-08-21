@@ -29,14 +29,13 @@ void window_borders_collision(Object_sprite *point_ptr, double width, double hei
 void render_callback(double delta_time) {
   Sprite_list_node *node = sprite_list;
 
-  for (int i = 0; i < 20; i++) {
+  while (node->next != NULL) {
     double width = 0;
     double height = 0;
 
     switch (node->sprite->figure_sprite_t.shape) {
       case CIRCLE:
-        width = node->sprite->circle_t.radius * 2;
-        height = node->sprite->circle_t.radius * 2;
+        width = height = node->sprite->circle_t.radius * 2;
         break;
       case RECTANGLE:
         width = node->sprite->rectangle_t.width;
@@ -44,16 +43,9 @@ void render_callback(double delta_time) {
         break;
     }
 
-    if (i < 10) {
-      // sprite render
-      window_borders_collision(node->sprite, width, height);
-      translate_sprite(node->sprite, delta_time);
-    } else {
-      // screen render
-      render_circle(&node->sprite->circle_t);
-      window_borders_collision(node->sprite, width, height);
-      move_point(node->sprite, delta_time);
-    }
+    render_rectangle((Rectangle_sprite *)node->sprite);
+    window_borders_collision((Object_sprite *)node->sprite, width, height);
+    move_point((Object_sprite *)node->sprite, delta_time);
 
     node = node->next;
   }
@@ -62,43 +54,21 @@ void render_callback(double delta_time) {
 int main(int argc, char *argv[]) {
   init_sprite_list();
 
-  // sprite render
-  for (int i = 1; i < 11; i++) {
-    Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
+  for (int i = 0; i < 5; i++) {
+    Rectangle_sprite *rectangle = malloc(sizeof(Rectangle_sprite));
 
-    ball->position.x = 24 * i;
-    ball->position.y = 80 + 6 * i;
-    ball->velocity.x = 50;
-    ball->velocity.y = 50;
-    ball->shape = CIRCLE;
-    ball->color = WHITE;
-    ball->radius = 10;
-    ball->sprite_arr = 0;
-    ball->sprite_size = 0;
+    rectangle->position.x = 20 + 8*i;
+    rectangle->position.y = 20 + 8*i;
+    rectangle->velocity.x = 70;
+    rectangle->velocity.y = 70;
+    rectangle->shape = RECTANGLE;
+    rectangle->sprite_arr = 0;
+    rectangle->sprite_size = 0;
+    rectangle->color = WHITE;
+    rectangle->width = 20;
+    rectangle->height = 10;
 
-    ball->sprite_arr = create_sprite(
-      ball->radius * 2,
-      ball->radius * 2,
-      (Object_sprite *)ball,
-      draw_circle_sprite
-    );
-  }
-
-  // screen render
-  for (int i = 1; i < 11; i++) {
-    Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
-
-    ball->position.x = 24 * i;
-    ball->position.y = 20 + 6 * i;
-    ball->velocity.x = 50;
-    ball->velocity.y = 50;
-    ball->shape = CIRCLE;
-    ball->color = WHITE;
-    ball->radius = 10;
-    ball->sprite_arr = 0;
-    ball->sprite_size = 0;
-
-    add_sprite(sprite_list, (Object_sprite *)ball);
+    add_sprite(sprite_list, (Object_sprite *)rectangle);
   }
 
   int exit_code = render(render_callback);

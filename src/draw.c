@@ -1,22 +1,25 @@
-#include <math.h>
 #include "consts.h"
 #include "framebuffer.h"
 #include "sprites.h"
 
 void render_rectangle(Rectangle_sprite *rectangle) {
-  for (int j = -rectangle->height/2; j < rectangle->height/2; j++) {
-    for (int i = -rectangle->height/2; i < rectangle->height/2; i++) {
-      int h = fabs(rectangle->position.x - i) <= rectangle->width/2 - 1;
-      int v = fabs(rectangle->position.y - j) <= rectangle->height/2 - 1;
-      int h_border = fabs(rectangle->position.x - i) <= rectangle->width/2;
-      int v_border = fabs(rectangle->position.y - j) <= rectangle->height/2;
-      // fill
-      if (h && v) {
-        paint_pixel(i, j, rectangle->color);
-      }
-      // border
-      if ((h_border && v_border) && !(h && v)) {
-        paint_pixel(i, j, GREEN);
+  int w = rectangle->width / 2;
+  int h = rectangle->height / 2;
+  int rx = rectangle->position.x;
+  int ry = rectangle->position.y;
+  int border = 1;
+
+  for (int y = ry - h; y <= ry + h; y++) {
+    for (int x = rx - w; x <= rx + w; x++) {
+      if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
+        int top_left = (x >= rx - w + border) && (y >= ry - h + border);
+        int bottom_right = (x <= rx + w - border) && (y <= ry + h - border);
+
+        if (top_left && bottom_right) {
+          paint_pixel(x, y, rectangle->color);
+        } else {
+          paint_pixel(x, y, GREEN);
+        }
       }
     }
   }
