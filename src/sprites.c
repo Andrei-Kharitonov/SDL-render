@@ -10,14 +10,14 @@ int draw_rectangle_sprite(Sprite_pixel sprite[], Object_sprite *rectangle_prt) {
   Rectangle_sprite *rectangle = &rectangle_prt->rectangle_t;
   int index = 0;
 
-  double w = rectangle->width / 2;
-  double h = rectangle->height / 2;
+  float w = rectangle->width / 2.0;
+  float h = rectangle->height / 2.0;
   int rx = rectangle->position.x;
   int ry = rectangle->position.y;
   int border = 1;
 
-  for (int y = ry - h; y < ry + h; y++) {
-    for (int x = rx - w; x < rx + w; x++) {
+  for (float y = ry - h; y < ry + h; y++) {
+    for (float x = rx - w; x < rx + w; x++) {
       int top    = y >= ry + h - border;
       int right  = x >= rx + w - border;
       int left   = x < rx - w + border;

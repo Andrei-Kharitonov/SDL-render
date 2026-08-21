@@ -3,14 +3,14 @@
 #include "sprites.h"
 
 void render_rectangle(Rectangle_sprite *rectangle) {
-  int w = rectangle->width / 2;
-  int h = rectangle->height / 2;
+  float w = rectangle->width / 2.0;
+  float h = rectangle->height / 2.0;
   int rx = rectangle->position.x;
   int ry = rectangle->position.y;
   int border = 1;
 
-  for (int y = ry - h; y < ry + h; y++) {
-    for (int x = rx - w; x < rx + w; x++) {
+  for (float y = ry - h; y < ry + h; y++) {
+    for (float x = rx - w; x < rx + w; x++) {
       if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
         int top    = y >= ry + h - border;
         int right  = x >= rx + w - border;

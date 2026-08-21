@@ -4,7 +4,7 @@
 #include "lists.h"
 #include "render.h"
 #include "sprites.h"
-#include "draw.h"
+#include "render_figures.h"
 
 void move_point(Object_sprite *point_ptr, double delta_time) {
   _Point *point = &point_ptr->point_t;
@@ -71,6 +71,7 @@ void render_callback(double delta_time) {
 int main(int argc, char *argv[]) {
   init_sprite_list();
 
+  // creating sprite once
   Rectangle_sprite *rectangle_s = malloc(sizeof(Rectangle_sprite));
   rectangle_s->position.x = 90;
   rectangle_s->position.y = 20;
@@ -78,8 +79,8 @@ int main(int argc, char *argv[]) {
   rectangle_s->velocity.y = 50;
   rectangle_s->shape = RECTANGLE;
   rectangle_s->color = WHITE;
-  rectangle_s->width = 26;
-  rectangle_s->height = 16;
+  rectangle_s->width = 25;
+  rectangle_s->height = 15;
   rectangle_s->sprite_arr = create_sprite(
     rectangle_s->width,
     rectangle_s->height,
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
   ball_s->velocity.y = 20;
   ball_s->shape = CIRCLE;
   ball_s->color = WHITE;
-  ball_s->radius = 18;
+  ball_s->radius = 18.2;
   ball_s->sprite_arr = create_sprite(
     ball_s->radius * 2,
     ball_s->radius * 2,
@@ -102,6 +103,7 @@ int main(int argc, char *argv[]) {
     draw_circle_sprite
   );
 
+  // calculating sprite every frame
   Rectangle_sprite *rectangle_r = malloc(sizeof(Rectangle_sprite));
   rectangle_r->position.x = 20;
   rectangle_r->position.y = 20;
@@ -111,8 +113,8 @@ int main(int argc, char *argv[]) {
   rectangle_r->sprite_arr = 0;
   rectangle_r->sprite_size = 0;
   rectangle_r->color = WHITE;
-  rectangle_r->width = 20;
-  rectangle_r->height = 10;
+  rectangle_r->width = 12;
+  rectangle_r->height = 33;
   add_sprite(sprite_list, (Object_sprite *)rectangle_r);
 
   Circle_sprite *ball_r = malloc(sizeof(Circle_sprite));
@@ -124,7 +126,7 @@ int main(int argc, char *argv[]) {
   ball_r->sprite_arr = 0;
   ball_r->sprite_size = 0;
   ball_r->color = WHITE;
-  ball_r->radius = 15;
+  ball_r->radius = 15.2;
   add_sprite(sprite_list, (Object_sprite *)ball_r);
 
   int exit_code = render(render_callback);

@@ -24,8 +24,8 @@ typedef struct {
   Sprite_pixel *sprite_arr;
   uint32_t sprite_size;
   uint32_t color;
-  double width;
-  double height;
+  int width;
+  int height;
 } Rectangle_sprite;
 
 typedef struct {

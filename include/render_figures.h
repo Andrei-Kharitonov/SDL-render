@@ -1,5 +1,5 @@
-#ifndef DRAW_H
-#define DRAW_H
+#ifndef RENDER_FIGURES_H
+#define RENDER_FIGURES_H
 
 #include "sprites.h"
 

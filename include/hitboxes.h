@@ -7,8 +7,8 @@ typedef struct {
   Vector position;
   Vector velocity;
   enum shapes shape;
-  double width;
-  double height;
+  int width;
+  int height;
 } Rectangle_hitbox;
 
 typedef struct {
