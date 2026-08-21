@@ -5,24 +5,65 @@
 #include "lists.h"
 #include "sprites.h"
 
+int draw_rectangle_sprite(Sprite_pixel sprite[], Object_sprite *rectangle_prt) {
+  Rectangle_sprite *rectangle = &rectangle_prt->rectangle_t;
+  int index = 0;
+
+  double w = rectangle->width / 2;
+  double h = rectangle->height / 2;
+  int rx = rectangle->position.x;
+  int ry = rectangle->position.y;
+  int border = 1;
+
+  for (int y = ry - h; y < ry + h; y++) {
+    for (int x = rx - w; x < rx + w; x++) {
+      int top    = y >= ry + h - border;
+      int right  = x >= rx + w - border;
+      int left   = x < rx - w + border;
+      int bottom = y < ry - h + border;
+
+      if (left || right || top || bottom) {
+        sprite[index].position.x = x;
+        sprite[index].position.y = y;
+        sprite[index].color = RED;
+      } else if (!(left || right || top || bottom)) {
+        sprite[index].position.x = x;
+        sprite[index].position.y = y;
+        sprite[index].color = rectangle->color;
+      }
+      index++;
+    }
+  }
+
+  return index;
+}
+
 int draw_circle_sprite(Sprite_pixel sprite[], Object_sprite *circle_ptr) {
   Circle_sprite *circle = &circle_ptr->circle_t;
   int index = 0;
-  double r_sq = circle->radius * circle->radius;
+  
+  int r = circle->radius;
+  int cx = circle->position.x;
+  int cy = circle->position.y;
 
-  for (double y = -circle->radius; y <= circle->radius; y++) {
-    for (double x = -circle->radius; x <= circle->radius; x++) {
-      // fill
-      if (!(x * x + y * y + circle->radius*2 > r_sq)) {
-        sprite[index].position.x = x + circle->position.x;
-        sprite[index].position.y = y + circle->position.y;
+  double r_sq = circle->radius * circle->radius;
+  double inner_r = circle->radius - 1.0;
+  double inner_r_sq = inner_r * inner_r;
+
+  for (int y = cy - r; y <= cy + r; y++) {
+    for (int x = cx - r; x <= cx + r; x++) {
+      double dx = x - circle->position.x;
+      double dy = y - circle->position.y;
+      double d_sq = dx * dx + dy * dy;
+
+      if (d_sq <= inner_r_sq) {
+        sprite[index].position.x = x;
+        sprite[index].position.y = y;
         sprite[index].color = circle->color;
         index++;
-      }
-      // edge
-      if ((x * x + y * y <= r_sq) && (x * x + y * y + circle->radius*2 > r_sq)) {
-        sprite[index].position.x = x + circle->position.x;
-        sprite[index].position.y = y + circle->position.y;
+      } else if (d_sq <= r_sq) {
+        sprite[index].position.x = x;
+        sprite[index].position.y = y;
         sprite[index].color = RED;
         index++;
       }

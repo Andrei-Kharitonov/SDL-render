@@ -48,6 +48,8 @@ typedef union {
 } Object_sprite;
 
 
+int draw_rectangle_sprite(Sprite_pixel sprite[], Object_sprite *rectangle_ptr);
+
 int draw_circle_sprite(Sprite_pixel sprite[], Object_sprite *circle_ptr);
 
 Sprite_pixel *create_sprite(

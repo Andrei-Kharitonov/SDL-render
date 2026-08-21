@@ -43,6 +43,9 @@ void render_callback(double delta_time) {
         break;
     }
 
+    // window_borders_collision(node->sprite, width, height);
+    // translate_sprite(node->sprite, delta_time);
+
     render_rectangle((Rectangle_sprite *)node->sprite);
     window_borders_collision((Object_sprite *)node->sprite, width, height);
     move_point((Object_sprite *)node->sprite, delta_time);
@@ -54,21 +57,40 @@ void render_callback(double delta_time) {
 int main(int argc, char *argv[]) {
   init_sprite_list();
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 10; i++) {
     Rectangle_sprite *rectangle = malloc(sizeof(Rectangle_sprite));
-
     rectangle->position.x = 20 + 8*i;
     rectangle->position.y = 20 + 8*i;
-    rectangle->velocity.x = 70;
-    rectangle->velocity.y = 70;
+    rectangle->velocity.x = 50;
+    rectangle->velocity.y = 50;
     rectangle->shape = RECTANGLE;
     rectangle->sprite_arr = 0;
     rectangle->sprite_size = 0;
     rectangle->color = WHITE;
     rectangle->width = 20;
     rectangle->height = 10;
-
     add_sprite(sprite_list, (Object_sprite *)rectangle);
+    // rectangle->sprite_arr = create_sprite(
+    //   rectangle->width,
+    //   rectangle->height,
+    //   (Object_sprite *)rectangle,
+    //   draw_rectangle_sprite
+    // );
+
+    // Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
+    // ball->position.x = 20 + 15 * i;
+    // ball->position.y = 20 + 15 * i;
+    // ball->velocity.x = 40;
+    // ball->velocity.y = 40;
+    // ball->shape = CIRCLE;
+    // ball->color = WHITE;
+    // ball->radius = 15;
+    // ball->sprite_arr = create_sprite(
+    //   ball->radius * 2,
+    //   ball->radius * 2,
+    //   (Object_sprite *)ball,
+    //   draw_circle_sprite
+    // );
   }
 
   int exit_code = render(render_callback);

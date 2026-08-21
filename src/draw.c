@@ -9,16 +9,18 @@ void render_rectangle(Rectangle_sprite *rectangle) {
   int ry = rectangle->position.y;
   int border = 1;
 
-  for (int y = ry - h; y <= ry + h; y++) {
-    for (int x = rx - w; x <= rx + w; x++) {
+  for (int y = ry - h; y < ry + h; y++) {
+    for (int x = rx - w; x < rx + w; x++) {
       if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
-        int top_left = (x >= rx - w + border) && (y >= ry - h + border);
-        int bottom_right = (x <= rx + w - border) && (y <= ry + h - border);
+        int top    = y >= ry + h - border;
+        int right  = x >= rx + w - border;
+        int left   = x < rx - w + border;
+        int bottom = y < ry - h + border;
 
-        if (top_left && bottom_right) {
-          paint_pixel(x, y, rectangle->color);
-        } else {
+        if (left || right || top || bottom) {
           paint_pixel(x, y, GREEN);
+        } else if (!(left || right || top || bottom)) {
+          paint_pixel(x, y, rectangle->color);
         }
       }
     }
