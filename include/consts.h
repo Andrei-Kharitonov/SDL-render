@@ -1,9 +1,9 @@
 #ifndef CONSTS_H
 #define CONSTS_H
 
-#define WIDTH 320
-#define HEIGHT 200
 #define SCALE 4
+#define WIDTH (int)(1280 / SCALE)
+#define HEIGHT (int)(800 / SCALE)
 #define FPS_CAP 60
 
 #define WHITE 0xFFFFFF00

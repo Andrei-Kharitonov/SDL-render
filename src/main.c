@@ -50,8 +50,8 @@ void render_callback(double delta_time) {
       translate_sprite(node->sprite, delta_time);
     } else {
       // screen render
+      render_circle(&node->sprite->circle_t);
       window_borders_collision(node->sprite, width, height);
-      draw_circle(&node->sprite->circle_t);
       move_point(node->sprite, delta_time);
     }
 
@@ -66,13 +66,13 @@ int main(int argc, char *argv[]) {
   for (int i = 1; i < 11; i++) {
     Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
 
-    ball->position.x = 20 * i;
-    ball->position.y = 80 + 4 * i;
+    ball->position.x = 24 * i;
+    ball->position.y = 80 + 6 * i;
     ball->velocity.x = 50;
     ball->velocity.y = 50;
     ball->shape = CIRCLE;
     ball->color = WHITE;
-    ball->radius = 6;
+    ball->radius = 10;
     ball->sprite_arr = 0;
     ball->sprite_size = 0;
 
@@ -88,13 +88,13 @@ int main(int argc, char *argv[]) {
   for (int i = 1; i < 11; i++) {
     Circle_sprite *ball = (Circle_sprite *)malloc(sizeof(Circle_sprite));
 
-    ball->position.x = 20 * i;
-    ball->position.y = 20 + 4 * i;
+    ball->position.x = 24 * i;
+    ball->position.y = 20 + 6 * i;
     ball->velocity.x = 50;
     ball->velocity.y = 50;
     ball->shape = CIRCLE;
     ball->color = WHITE;
-    ball->radius = 6;
+    ball->radius = 10;
     ball->sprite_arr = 0;
     ball->sprite_size = 0;
 
