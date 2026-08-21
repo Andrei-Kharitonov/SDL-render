@@ -25,6 +25,4 @@ void add_sprite(Sprite_list_node *start_node, Object_sprite *sprite);
 
 void add_hitbox(Hitbox_list_node *start_node, Object_hitbox *hitbox);
 
-void render_sprites();
-
 #endif

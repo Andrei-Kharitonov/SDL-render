@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "consts.h"
+#include "framebuffer.h"
 #include "lists.h"
 #include "sprites.h"
 
@@ -105,6 +106,19 @@ Sprite_pixel *create_sprite(
   add_sprite(sprite_list, figure_sprite);
   
   return sprite;
+}
+
+void render_sprite(_Figure_sprite *figure_sprite) {
+  if (figure_sprite->sprite_arr != NULL) {
+    for (int j = 0; j < figure_sprite->sprite_size; j++) {
+      int x = figure_sprite->sprite_arr[j].position.x;
+      int y = figure_sprite->sprite_arr[j].position.y;
+
+      if ((x >= 0 && x < WIDTH) && (y >= 0 && y < HEIGHT)) {
+        paint_pixel(x, y, figure_sprite->sprite_arr[j].color);
+      }
+    }
+  }
 }
 
 void translate_sprite(Object_sprite *figure_sprite_ptr, double delta_time) {

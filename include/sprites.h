@@ -59,6 +59,8 @@ Sprite_pixel *create_sprite(
   int (*draw_sprite)(Sprite_pixel [], Object_sprite *)
 );
 
+void render_sprite(_Figure_sprite *figure_sprite);
+
 void translate_sprite(Object_sprite *figure_sprite_ptr, double delta_time);
 
 #endif
