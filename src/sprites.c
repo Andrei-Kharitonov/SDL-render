@@ -1,105 +1,47 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "basic_types.h"
 #include "consts.h"
 #include "framebuffer.h"
 #include "lists.h"
 #include "sprites.h"
-
-int draw_rectangle_sprite(Sprite_pixel sprite[], Object_sprite *rectangle_prt) {
-  Rectangle_sprite *rectangle = &rectangle_prt->rectangle_t;
-  int index = 0;
-
-  float w = rectangle->width / 2.0;
-  float h = rectangle->height / 2.0;
-  int rx = rectangle->position.x;
-  int ry = rectangle->position.y;
-  int border = 1;
-
-  for (float y = ry - h; y < ry + h; y++) {
-    for (float x = rx - w; x < rx + w; x++) {
-      int top    = y >= ry + h - border;
-      int right  = x >= rx + w - border;
-      int left   = x < rx - w + border;
-      int bottom = y < ry - h + border;
-
-      if (left || right || top || bottom) {
-        sprite[index].position.x = x;
-        sprite[index].position.y = y;
-        sprite[index].color = RED;
-      } else if (!(left || right || top || bottom)) {
-        sprite[index].position.x = x;
-        sprite[index].position.y = y;
-        sprite[index].color = rectangle->color;
-      }
-      index++;
-    }
-  }
-
-  return index;
-}
-
-int draw_circle_sprite(Sprite_pixel sprite[], Object_sprite *circle_ptr) {
-  Circle_sprite *circle = &circle_ptr->circle_t;
-  int index = 0;
-  
-  int r = circle->radius;
-  int cx = circle->position.x;
-  int cy = circle->position.y;
-
-  double r_sq = circle->radius * circle->radius;
-  double inner_r = circle->radius - 1.0;
-  double inner_r_sq = inner_r * inner_r;
-
-  for (int y = cy - r; y <= cy + r; y++) {
-    for (int x = cx - r; x <= cx + r; x++) {
-      double dx = x - circle->position.x;
-      double dy = y - circle->position.y;
-      double d_sq = dx * dx + dy * dy;
-
-      if (d_sq <= inner_r_sq) {
-        sprite[index].position.x = x;
-        sprite[index].position.y = y;
-        sprite[index].color = circle->color;
-        index++;
-      } else if (d_sq <= r_sq) {
-        sprite[index].position.x = x;
-        sprite[index].position.y = y;
-        sprite[index].color = RED;
-        index++;
-      }
-    }
-  }
-
-  return index;
-}
+#include "draw_figures.h"
 
 Sprite_pixel *create_sprite(
+  Object_sprite *figure_sprite,
   int width,
   int height,
-  Object_sprite *figure_sprite,
-  int (*draw_sprite)(Sprite_pixel [], Object_sprite *)
+  char paint_out_of_screen
 ) {
   enum shapes shape = figure_sprite->figure_sprite_t.shape;
-
   int sprite_size = width * height; // max sprite size
-  if (shape != RECTANGLE) sprite_size++;
+  if (shape != RECTANGLE) {
+    sprite_size++;
+  }
 
   Sprite_pixel *sprite = malloc(sizeof(Sprite_pixel) * sprite_size);
-
   if (!sprite) {
     printf("Sprite memory allocation error\n");
     return 0;
   }
+  figure_sprite->figure_sprite_t.sprite_arr = sprite;
 
-  sprite_size = draw_sprite(sprite, figure_sprite); // actual size
-  if (shape != RECTANGLE) {
-    sprite = realloc(sprite, sizeof(Sprite_pixel) * sprite_size);
+  switch (shape) {
+    case RECTANGLE:
+      draw_rectangle((Rectangle_sprite *)figure_sprite, paint_out_of_screen, SPRITE);
+      break;
+    case CIRCLE:
+      sprite_size = draw_circle((Circle_sprite *)figure_sprite, paint_out_of_screen, SPRITE);
+      break;
   }
 
-  if (!sprite) {
-    printf("Sprite memory reallocation error\n");
-    return 0;
+  if (shape != RECTANGLE) {
+    sprite = realloc(sprite, sizeof(Sprite_pixel) * sprite_size);
+    if (!sprite) {
+      printf("Sprite memory reallocation error\n");
+      return 0;
+    }
   }
 
   figure_sprite->figure_sprite_t.sprite_size = sprite_size;

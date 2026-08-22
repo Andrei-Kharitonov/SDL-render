@@ -1,11 +1,11 @@
 [
   {
-    "file": "./src/draw.c",
+    "file": "./src/draw_figures.c",
     "arguments": [
       "/usr/bin/gcc",
       "-I./include",
       "-O3",
-      "./src/draw.c",
+      "./src/draw_figures.c",
       "-o",
       "main"
     ],

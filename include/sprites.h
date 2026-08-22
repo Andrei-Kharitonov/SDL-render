@@ -3,6 +3,11 @@
 
 #include "basic_types.h"
 
+enum Draw_types {
+  RENDER,
+  SPRITE
+};
+
 typedef struct {
   Vector position;
   uint32_t color;
@@ -48,16 +53,7 @@ typedef union {
 } Object_sprite;
 
 
-int draw_rectangle_sprite(Sprite_pixel sprite[], Object_sprite *rectangle_ptr);
-
-int draw_circle_sprite(Sprite_pixel sprite[], Object_sprite *circle_ptr);
-
-Sprite_pixel *create_sprite(
-  int width,
-  int height,
-  Object_sprite *figure_sprite,
-  int (*draw_sprite)(Sprite_pixel [], Object_sprite *)
-);
+Sprite_pixel *create_sprite(Object_sprite *figure_sprite, int width, int height, char paint_out_of_screen);
 
 void render_sprite(_Figure_sprite *figure_sprite);
 

@@ -4,7 +4,7 @@
 #include "lists.h"
 #include "render.h"
 #include "sprites.h"
-#include "render_figures.h"
+#include "draw_figures.h"
 
 void move_point(Object_sprite *point_ptr, double delta_time) {
   _Point *point = &point_ptr->point_t;
@@ -39,7 +39,7 @@ void render_callback(double delta_time) {
         width = height = node->sprite->circle_t.radius * 2;
 
         if (node->sprite->figure_sprite_t.sprite_arr == NULL) {
-          render_circle(&node->sprite->circle_t);
+          draw_circle(&node->sprite->circle_t, RENDER, 0);
         }
 
         break;
@@ -48,7 +48,7 @@ void render_callback(double delta_time) {
         height = node->sprite->rectangle_t.height;
 
         if (node->sprite->figure_sprite_t.sprite_arr == NULL) {
-          render_rectangle(&node->sprite->rectangle_t);
+          draw_rectangle(&node->sprite->rectangle_t, RENDER, 0);
         }
 
         break;
@@ -82,10 +82,10 @@ int main(int argc, char *argv[]) {
   rectangle_s->width = 25;
   rectangle_s->height = 15;
   rectangle_s->sprite_arr = create_sprite(
+    (Object_sprite *)rectangle_s,
     rectangle_s->width,
     rectangle_s->height,
-    (Object_sprite *)rectangle_s,
-    draw_rectangle_sprite
+    1
   );
 
   Circle_sprite *ball_s = malloc(sizeof(Circle_sprite));
@@ -97,10 +97,10 @@ int main(int argc, char *argv[]) {
   ball_s->color = WHITE;
   ball_s->radius = 18.2;
   ball_s->sprite_arr = create_sprite(
-    ball_s->radius * 2,
-    ball_s->radius * 2,
     (Object_sprite *)ball_s,
-    draw_circle_sprite
+    ball_s->radius * 2,
+    ball_s->radius * 2,
+    1
   );
 
   // calculating sprite every frame
