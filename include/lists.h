@@ -14,15 +14,18 @@ typedef struct Hitbox_list_node {
   struct Hitbox_list_node *next;
 } Hitbox_list_node;
 
+typedef struct Node {
+  void *data;
+  struct Node *next;
+} Node;
+
 extern Sprite_list_node *sprite_list;
 extern Hitbox_list_node *hitbox_list;
 
-void init_sprite_list();
+void init_lists(void);
 
-void init_hitbox_list();
+void add_sprite(Object_sprite *sprite);
 
-void add_sprite(Sprite_list_node *start_node, Object_sprite *sprite);
-
-void add_hitbox(Hitbox_list_node *start_node, Object_hitbox *hitbox);
+void delete_sprite(Object_sprite *sprite);
 
 #endif

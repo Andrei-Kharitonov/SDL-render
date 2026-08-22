@@ -1,6 +1,7 @@
 #include "consts.h"
 #include "framebuffer.h"
 #include "sprites.h"
+#include "draw_figures.h"
 
 int draw_rectangle(
   Rectangle_sprite *rectangle,

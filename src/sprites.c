@@ -45,7 +45,7 @@ Sprite_pixel *create_sprite(
   }
 
   figure_sprite->figure_sprite_t.sprite_size = sprite_size;
-  add_sprite(sprite_list, figure_sprite);
+  add_sprite(figure_sprite);
   
   return sprite;
 }

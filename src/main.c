@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "basic_types.h"
 #include "consts.h"
 #include "lists.h"
 #include "render.h"
@@ -21,8 +22,13 @@ void window_borders_collision(Object_sprite *point_ptr, double width, double hei
   int is_top = point->position.y - height/2 <= 0;
   int is_bottom = point->position.y + height/2 >= HEIGHT;
 
-  if (is_left || is_right) point->velocity.x = -point->velocity.x;
-  if (is_top || is_bottom) point->velocity.y = -point->velocity.y;
+  if (is_left || is_right) {
+    point->velocity.x = -point->velocity.x;
+  }
+  if (is_top || is_bottom) {
+    point->velocity.y = -point->velocity.y;
+  }
+
 }
 
 // Called every frame
@@ -69,7 +75,7 @@ void render_callback(double delta_time) {
 }
 
 int main(int argc, char *argv[]) {
-  init_sprite_list();
+  init_lists();
 
   // creating sprite once
   Rectangle_sprite *rectangle_s = malloc(sizeof(Rectangle_sprite));
@@ -88,18 +94,18 @@ int main(int argc, char *argv[]) {
     1
   );
 
-  Circle_sprite *ball_s = malloc(sizeof(Circle_sprite));
-  ball_s->position.x = 100;
-  ball_s->position.y = 90;
-  ball_s->velocity.x = 35;
-  ball_s->velocity.y = 20;
-  ball_s->shape = CIRCLE;
-  ball_s->color = WHITE;
-  ball_s->radius = 18.2;
-  ball_s->sprite_arr = create_sprite(
-    (Object_sprite *)ball_s,
-    ball_s->radius * 2,
-    ball_s->radius * 2,
+  Circle_sprite *circle_s = malloc(sizeof(Circle_sprite));
+  circle_s->position.x = 100;
+  circle_s->position.y = 90;
+  circle_s->velocity.x = 35;
+  circle_s->velocity.y = 20;
+  circle_s->shape = CIRCLE;
+  circle_s->color = WHITE;
+  circle_s->radius = 18.2;
+  circle_s->sprite_arr = create_sprite(
+    (Object_sprite *)circle_s,
+    circle_s->radius * 2,
+    circle_s->radius * 2,
     1
   );
 
@@ -115,19 +121,19 @@ int main(int argc, char *argv[]) {
   rectangle_r->color = WHITE;
   rectangle_r->width = 12;
   rectangle_r->height = 33;
-  add_sprite(sprite_list, (Object_sprite *)rectangle_r);
+  add_sprite((Object_sprite *)rectangle_r);
 
-  Circle_sprite *ball_r = malloc(sizeof(Circle_sprite));
-  ball_r->position.x = 20;
-  ball_r->position.y = 90;
-  ball_r->velocity.x = 40;
-  ball_r->velocity.y = 40;
-  ball_r->shape = CIRCLE;
-  ball_r->sprite_arr = 0;
-  ball_r->sprite_size = 0;
-  ball_r->color = WHITE;
-  ball_r->radius = 15.2;
-  add_sprite(sprite_list, (Object_sprite *)ball_r);
+  Circle_sprite *circle_r = malloc(sizeof(Circle_sprite));
+  circle_r->position.x = 20;
+  circle_r->position.y = 90;
+  circle_r->velocity.x = 40;
+  circle_r->velocity.y = 40;
+  circle_r->shape = CIRCLE;
+  circle_r->sprite_arr = 0;
+  circle_r->sprite_size = 0;
+  circle_r->color = WHITE;
+  circle_r->radius = 15.2;
+  add_sprite((Object_sprite *)circle_r);
 
   int exit_code = render(render_callback);
   return exit_code;

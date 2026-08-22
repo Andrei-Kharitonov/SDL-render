@@ -3,6 +3,11 @@
 
 #include "sprites.h"
 
+enum Draw_types {
+  RENDER,
+  SPRITE
+};
+
 int draw_rectangle(
   Rectangle_sprite *rectangle,
   enum Draw_types draw_type,

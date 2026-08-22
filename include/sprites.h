@@ -3,11 +3,6 @@
 
 #include "basic_types.h"
 
-enum Draw_types {
-  RENDER,
-  SPRITE
-};
-
 typedef struct {
   Vector position;
   uint32_t color;
